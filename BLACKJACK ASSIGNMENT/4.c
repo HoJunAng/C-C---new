@@ -3,6 +3,7 @@
 #include<stdlib.h>
 #include <time.h>
 #define getName(var) #var
+//niama char siu bau
 
 int Deck[52];
 int ShuffledDeck[52];
