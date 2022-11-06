@@ -4,19 +4,39 @@
 #include <time.h>
 #define getName(var) #var
 
+int input; // for inputs from users to either play, quit, hit, stand, or choose which ace. 
 int Deck[52];
 int ShuffledDeck[52];
+int player1total;
+int player2total;
+int player3total;
+int player4total;
+int player5total;
+int dealertotal;
 int balance1 = 50;
 int balance2 = 50;
 int balance3 = 50;
 int balance4 = 50;
 int balance5 = 50;
+int balancedealer;
 int PositionNumber = -10;
 int position1;
 int position2;
 int position3;
 int position4;
 int position5;
+int blackjack1 = 1;
+int bust1 = 1;
+int blackjack2 = 1;
+int bust2 = 1;
+int blackjack3 = 1;
+int bust3 = 1;
+int blackjack4 = 1;
+int bust4 = 1;
+int blackjack5 = 1;
+int bust5 = 1;
+int dcv1;
+int garbage;
 void playturn1();
 void playturn2();
 void playturn3();
@@ -30,29 +50,41 @@ void shuffledeck();
 int play(int p);
     
 int main(){
-      
-    int input2;
+    
+    // to ask the user if they want to play or quit the game
     printf("Hello! My name is BlackJackBot (creative, I know!).\nToday is either going to be your luckiest day, or your worse day known to man kind...\n*cough cough* Let's move on! Type 1 play if you wanna play! Type 2 quit if you wanna quit!\n");
-    scanf("%d", &input2);
-    if(input2 == 2){
+    scanf("%d", &input);
+
+    if(input == 2){ // quit function
+        
         printf("Thanks for playing!");
         exit(0);
-        }
-        else if (input2 == 1){
-          int p;
-          printf("Enter the number of players that are playing! (2-6 players only please!)\n");
-          scanf("%d", &p);
-          if(p<7 && p>1)
+    }
+
+    else if(input == 1){ // play function
+
+        int p; // to ask how many players are playing
+        printf("Enter the number of players that are playing! (2-6 players only please!)\n");
+        scanf("%d", &p);
+
+        if(p<7 && p>1) // to ensure it's between 2-6 players
             play(p);
-          else
+
+        else{ /* This code will be added multiple times so that the code won't break when the input is wrong from the user.
+                 If the input is wrong, all players must restart the code in order to play again. */
+
             printf("Wrong input, please restart the code!");
             exit(0);
-          }
-        else
-          printf("Wrong input, please restart the code!\n");
-          exit(0);
+        }
     }
-    
+
+    else{
+
+        printf("Wrong input, please restart the code!\n");
+        exit(0);
+    }
+}
+
 int play(int p){
     
     int balancedealer = (p-1) * 50;
@@ -425,7 +457,6 @@ char *cface(int b){
       
 void checkAce(int v1, int v2, int *a1){
         if(v1 == 1 || v2 == 1){
-            int input;
             if(v1 == 1 && v2 == 1){
                 v1 = 11;
                 v2 = 1;
@@ -445,11 +476,12 @@ void checkAce(int v1, int v2, int *a1){
     }
     
 void playturn1(){
-
+    blackjack1 = 0;
+    bust1 = 0;
     printf("Alright, it's Player's 1 turn!\n");
     printf("Your current balance is $%d.\n", balance1);
 
-    int garbage=0; // garbage value
+    garbage=0; // garbage value
     int a1 = hit(&garbage); // hit(int *i = &inc)
     char *acs1 = csuit(a1);
     char *acf1 = cface(a1);
@@ -471,13 +503,8 @@ void playturn1(){
     
     printf("The dealer's face up card is a %s of %s worth %d.\n", dcf1, dcs1, dcv1);
     
-    int d2 = hit(&garbage);
-    char *dcs2 = csuit(d2);
-    char *dcf2 = cface(d2);
-    int dcv2 = cval(d2);
-    
-    int player1total = acv1 + acv2;
-    int dealertotal = dcv1;
+    player1total = acv1 + acv2;
+    dealertotal = dcv1;
     
     checkAce(acv1, acv2, &player1total);
     
@@ -485,13 +512,14 @@ void playturn1(){
     
     if(player1total == 21){
 
-        printf("Congrats! You got a blackjack!");
+        printf("Congrats! You got a blackjack! Dealer losses $5...");
         balance1 += 5;
+        balancedealer -=5;
+        blackjack1 = 1;
     }
         
     else{
 
-        int input;
         scanf("%d", &input);
 
         while(input != 2){
@@ -509,7 +537,6 @@ void playturn1(){
                         
                     if(acv2==1){
 
-                        int input;
                         printf("You've got an ace. Choose whether you want to make it count as 1 or 11.\n");
                         scanf("%d",&input);
                         if(input == 11)
@@ -519,8 +546,10 @@ void playturn1(){
 
                 else if(player1total >21){
                         
-                printf("Oh no, you've busted with %d. Try Again!\n", player1total);
+                printf("Oh no, you've busted with %d. Dealer gains $5!\n", player1total);
                 balance1 -= 5;
+                balancedealer +=5;
+                bust1 = 1;
                 break;
                 }
 
@@ -535,241 +564,108 @@ void playturn1(){
             }
         }
      }
-
-    if(player1total <= 21){
-
-        printf("The dealer's flips a %s of %s worth %d.\n", dcf2, dcs2, dcv2);
-        dealertotal += dcv2;
-
-        if(dcv2 == 1){
-
-            if(dealertotal+11 < 21)
-                dealertotal += 10;
-        }
-    
-        if(dealertotal >= 16)
-            printf("The dealer stands with %d.\n", dealertotal);
-    
-        while(dealertotal < 16){
-
-            int d3 = hit(&garbage);
-            char *dcs3 = csuit(d3);
-            char *dcf3 = cface(d3);
-            int dcv3 = cval(d3);
-
-            dealertotal += dcv3;
-
-            printf("The dealer got a %s of %s worth %d.\n", dcf3, dcs3, dcv3);
-
-            if(dealertotal < 16){
-
-                if(dcv3==1){
-
-                    if(dealertotal+11<21)
-                        dealertotal += 10;
-                }
-            }
-            
-            else if(dealertotal > 21){
-
-                printf("The dealer busted with %d! You win!\n", dealertotal);
-                break;
-            }
-            
-            else{
-
-                printf("The dealer stands with %d.\n", dealertotal);
-                break;
-            }
-
-            printf("The dealer's new total is %d.\n", dealertotal);
-        }
-
-        if(dealertotal<player1total){
-
-            printf("You beat the dealer! You gained $5!\n");
-            balance1 += 5;
-        }
-
-        else if(dealertotal==player1total)
-            printf("Its a tie! Push pot, no one wins anything!");
-            
-        else if(dealertotal>player1total && dealertotal <= 21){
-               
-            printf("Oh no! Looks like the dealer won. Goodbye $5... Try again!\n"); 
-            balance1 -= 5;  
-        }
-            
-        else{
-
-            printf("You beat the dealer! Your payout is $5.\n"); 
-            balance1 += 5;
-        }
-    }
 }
-
+    
 void playturndealer(){
-
-    printf("Alright, it's the Dealer's turn!\n");
-    printf("Your current balance is $%d.\n", balance1);
-    printf("You've made a bet of $5. Good luck!\n\n");
-
-    int garbage=0; // garbage value
-    int a1 = hit(&garbage); // hit(int *i = &inc)
-    char *acs1 = csuit(a1);
-    char *acf1 = cface(a1);
-    int acv1 = cval(a1);
-        
-    printf("You got a %s of %s worth %d, and ", acf1, acs1, acv1);
-        
-    int a2 = hit(&garbage);
-    char *acs2 = csuit(a2);
-    char *acf2 = cface(a2);
-    int acv2 = cval(a2);
-    
-    printf("a %s of %s worth %d.\n", acf2, acs2, acv2);
-    
-    int d1 = hit(&garbage);
-    char *dcs1 = csuit(d1);
-    char *dcf1 = cface(d1);
-    int dcv1 = cval(d1);
-    
-    printf("The dealer's face up card is a %s of %s worth %d.\n", dcf1, dcs1, dcv1);
+   
+    printf("Alright, it's the Dealer's turn!\n(Remember, you need to get a total of atleast 17 points as that's the rules.\nIf you don't, rule is broken, and you have to restart the entire game as a punishmen!!!!)");
+    printf("Your current balance is $%d.\n",  balancedealer);
     
     int d2 = hit(&garbage);
     char *dcs2 = csuit(d2);
     char *dcf2 = cface(d2);
     int dcv2 = cval(d2);
     
-    int player1total = acv1 + acv2;
-    int dealertotal = dcv1;
+    dealertotal = dcv1 + dcv2;
     
     checkAce(dcv1, dcv2, &dealertotal);
     
-    printf("You have a total of %d points, and the dealer has %d.\n(type 1 to draw a card, or type 2 to end your turn!)\n", player1total, dealertotal);  
+    printf("You have a total of %d points\n(type 1 to draw a card, or type 2 to end your turn!)\n", dealertotal);  
     
-    if(player1total == 21){
+    if(bust1 == 1 && bust2 == 1 && bust3 == 1 && bust4 == 1 && bust5 == 0)
+        printf("Well, everyone busted before the dealer... Anyways, let's move on to the next game!\n");
 
-        printf("Congrats! You got a blackjack!");
-        balance1 += 5;
+    else if(blackjack1 == 1 && blackjack2 == 1 && blackjack3 == 1 && blackjack4 == 1 && blackjack5 == 1)
+        printf("Well, everyone got a blackjack before the dealer, big yikes for the dealer...\nAnyways, let's move on to the next game!\n");\
+
+    else if(dealertotal == 21){
+
+        printf("Congrats! You got a blackjack! All Players who doesn't have a blackjack losses! Sadge...");
+        if(blackjack1 == 0){
+            balance1 -= 5;
+            balancedealer +=5;
+        }
     }
         
     else{
 
-        int input;
+        input;
         scanf("%d", &input);
 
         while(input != 2){
 
             if(input = 1){
 
-                int a3 = hit(&garbage);
-                char *acs3 = csuit(a3);
-                char *acf3 = cface(a3);
-                int acv2 = cval(a3);
-                player1total += acv2;
-                printf("You got a %s of %s worth %d.\n", acf3, acs3, acv2);
+                int d3 = hit(&garbage);
+                char *dcs3 = csuit(d3);
+                char *dcf3 = cface(d3);
+                int dcv2 = cval(d3);
+                dealertotal += dcv2;
+                printf("You got a %s of %s worth %d.\n", dcf3, dcs3, dcv2);
 
-                if(player1total <= 21){
+                if(dealertotal <= 21){
                         
-                    if(acv2==1){
+                    if(dcv2==1){
 
-                        int input;
                         printf("You've got an ace. Choose whether you want to make it count as 1 or 11.\n");
                         scanf("%d",&input);
                         if(input == 11)
-                        player1total += 10;
+                            player1total += 10;
                     }                    
                 }
 
-                else if(player1total >21){
+                else if(dealertotal >21){
                         
-                printf("Oh no, you've busted with %d. Try Again!\n", player1total);
-                balance1 -= 5;
-                break;
+                    printf("Oh no, you've busted with %d. All players that doesn't bust wins!\n", dealertotal);
+
+                    if(bust1 == 0){
+                        balance1 +=5;
+                        balancedealer -= 5;
+                    }
+                    break;
                 }
 
                 else{
-
                 printf("Wrong input, please restart the code!\n");
                 exit(0);
                 }
 
-                printf("Your new total is %d.\n", player1total);
+                printf("Your new total is %d.\n", dealertotal);
                 scanf("%d", &input);
             }
         }
      }
 
-    if(player1total <= 21){
+    if(dealertotal < 16){
+        printf("DEALER HAS LESS THAN 17 POINTS. RULE IS BROKEN, GAME OVER!\nPLEASE RESTART THE CODE TO PLAY AGAIN!!!\n");
+        exit(0);
+    }
 
-        printf("The dealer's flips a %s of %s worth %d.\n", dcf2, dcs2, dcv2);
-        dealertotal += dcv2;
-
-        if(dcv2 == 1){
-
-            if(dealertotal+11 < 21)
-                dealertotal += 10;
-        }
-    
-        if(dealertotal >= 16)
-            printf("The dealer stands with %d.\n", dealertotal);
-    
-        while(dealertotal < 16){
-
-            int d3 = hit(&garbage);
-            char *dcs3 = csuit(d3);
-            char *dcf3 = cface(d3);
-            int dcv3 = cval(d3);
-
-            dealertotal += dcv3;
-
-            printf("The dealer got a %s of %s worth %d.\n", dcf3, dcs3, dcv3);
-
-            if(dealertotal < 16){
-
-                if(dcv3==1){
-
-                    if(dealertotal+11<21)
-                        dealertotal += 10;
-                }
-            }
-            
-            else if(dealertotal > 21){
-
-                printf("The dealer busted with %d! You win!\n", dealertotal);
-                break;
-            }
-            
-            else{
-
-                printf("The dealer stands with %d.\n", dealertotal);
-                break;
-            }
-
-            printf("The dealer's new total is %d.\n", dealertotal);
-        }
-
-        if(dealertotal<player1total){
-
-            printf("You beat the dealer! You gained $5!\n");
+    /* initialise bust and blackjack values for all players early on
+       and set it to a garbage value so that you only need 1 void dealerturn() function */
+    if(bust1 == 0 && blackjack1 == 0){
+        if(player1total > dealertotal){
+            printf("Player 1 wins over dealer! Player 1 gains $5 while dealer losses $5!\n");
             balance1 += 5;
+            balancedealer -=5;
         }
-
-        else if(dealertotal==player1total)
-            printf("Its a tie! Push pot, no one wins anything!");
-            
-        else if(dealertotal>player1total && dealertotal <= 21){
-               
-            printf("Oh no! Looks like the dealer won. Goodbye $5... Try again!\n"); 
-            balance1 -= 5;  
+        else if(player1total < dealertotal){
+            printf("Dealer wins over Player 1! Dealer gains $5 while Player 1 losses $5!\n");
+            balance1 -= 5;
+            balancedealer +- 5;
         }
-            
-        else{
-
-            printf("You beat the dealer! Your payout is $5.\n"); 
-            balance1 += 5;
-        }
+        else if(player1total == dealertotal)
+            printf("Dealer and Player 1 has the same points, neither wins in this case. PUSH POT!!!\n");
     }
 }
   
