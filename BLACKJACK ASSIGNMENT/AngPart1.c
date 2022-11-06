@@ -1,7 +1,8 @@
-AngPart1.c
 #include<stdio.h>
 #include<string.h>
 #include<stdlib.h>
+#include<time.h>
+#define getName(var) #var
 
 int Deck[52];
 int ShuffledDeck[52];
@@ -29,6 +30,8 @@ void checkAce(int v1, int v2, int *a1);
 void result();
 void shuffledeck();
 int play(int p);
+void rank(int a, int);
+
 
 int main(){
   

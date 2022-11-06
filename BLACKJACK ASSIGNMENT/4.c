@@ -1,31 +1,42 @@
-4.c
-    #include<stdio.h>
-    #include<string.h>
-    #include<stdlib.h>
-    #include <time.h>
+#include<stdio.h>
+#include<string.h>
+#include<stdlib.h>
+#include <time.h>
+#define getName(var) #var
+
+int Deck[52];
+int ShuffledDeck[52];
+int balance1 = 50;
+int balance2 = 50;
+int balance3 = 50;
+int balance4 = 50;
+int balance5 = 50;
+int PositionNumber = -10;
+int position1;
+int position2;
+int position3;
+int position4;
+int position5;
+void playturn1();
+void playturn2();
+void playturn3();
+void playturn4();
+void playturn5();
+void playturndealer();
+void initdeck();
+void checkAce(int v1, int v2, int *a1);
+void result();
+void shuffledeck();
+int play(int p);
     
-    int Deck[52];
-    int ShuffledDeck[52];
-    int balance1 = 50;
-    int balance2 = 50;
-    int balance3 = 50;
-    int balance4 = 50;
-    int balance5 = 50;
-    void playturn1();
-    void initdeck();
-    void checkAce(int v1, int v2, int *a1);
-    void result();
-    void shuffledeck();
-    int play(int p);
-    
-    int main(){
+int main(){
       
-        int input2;
-        printf("Hello! My name is BlackJackBot (creative, I know!).\nToday is either going to be your luckiest day, or your worse day known to man kind...\n*cough cough* Let's move on! Type 1 play if you wanna play! Type 2 quit if you wanna quit!\n");
-        scanf("%d", &input2);
-        if(input2 == 2){
-          printf("Thanks for playing!");
-          exit(0);
+    int input2;
+    printf("Hello! My name is BlackJackBot (creative, I know!).\nToday is either going to be your luckiest day, or your worse day known to man kind...\n*cough cough* Let's move on! Type 1 play if you wanna play! Type 2 quit if you wanna quit!\n");
+    scanf("%d", &input2);
+    if(input2 == 2){
+        printf("Thanks for playing!");
+        exit(0);
         }
         else if (input2 == 1){
           int p;
@@ -42,42 +53,293 @@
           exit(0);
     }
     
-    int play(int p){
-      int balancedealer = (p-1) * 50;
-      printf("Everyone starts with $50 dollars, hurray!!!\n");
+int play(int p){
+    
+    int balancedealer = (p-1) * 50;
+    printf("All players starts with $50! And the dealer starts with %d!\n", balancedealer);
+    if(p == 2){
 
-      if(p == 2){
         while(balance1>0){
             initdeck();
             shuffledeck();
             playturn1();
         }
-        if(balance1<=0){
-            printf("GAME OVER! DEALER WON!!!");
-            exit(0);
+        while(balancedealer>0){
+            playturndealer();
         }
 
-      }
-        printf("Somethig went wrong, please restart the code!");
-        exit(0);
+        if(balance1<=0){
+            printf("GAME OVER! DEALER WON!!!\n");
+            printf("1st Place: Dealer\n2ndP Place: Player 1\n");
+            exit(0);
+        }
+        if(balancedealer<=0){
+            printf("GAME OVER! PLAYERS WON!!!\n");
+            printf("1st Place: Player 1\n2ndP Place: Dealer\n");
+            exit(0);
+        }
     }
-    
-    
-    
-    int hit(int *i){
+
+    else if(p == 3){
+
+        if(balance1<=0){
+                printf("Aww, Player 1 lost\n!");
+                balance1 = PositionNumber;
+                PositionNumber++;
+        }
+        if(balance2<=0){
+                printf("Aww, Player 2 lost!\n");
+                balance2 = PositionNumber;
+                PositionNumber++;
+        }
+
+        while(balance1>0 || balance2>0){
+            
+            initdeck();
+            shuffledeck();
+
+            while(balance1>0)
+                playturn1();
+            while(balance2>0)
+                playturn2();
+            while(balancedealer>0)
+                playturndealer();
+        }
+
+        if(balancedealer<0){
+            printf("PLAYERS WIN! NICE JOB!!!\n");
+            if(balance1>balance2){
+                printf("1st Place: Player 1\n2nd Place: Player 2\n3rd Place: Dealer\n");
+                exit(0);
+            }
+            else if(balance1<balance2){
+                printf("1st Place: Player 2\n2nd Place: Player 1\n3rd Place: Dealer\n");
+                exit(0);
+            }
+        }
+
+        else if(balance1<0 && balance2<0){
+            printf("DEALER WINS! LUCKY DAY FOR THE HOUSE TODAY!!!\n");
+            if(balance1>balance2){
+                printf("1st Place: Dealer\n2nd Place: Player 1\n3rd Place: Player 2\n");
+                exit(0);
+            }
+            else if(balance1<balance2){
+                printf("1st Place: Dealer\n2nd Place: Player 2\n3rd Place: Player 1\n");
+                exit(0);
+            }
+        }
+    }
+
+    else if(p == 4){
+
+        if(balance1<=0){
+                printf("Aww, Player 1 lost\n!");
+                balance1 = PositionNumber;
+                PositionNumber++;
+        }
+        if(balance2<=0){
+                printf("Aww, Player 2 lost!\n");
+                balance2 = PositionNumber;
+                PositionNumber++;
+        }
+        if(balance3<=0){
+                printf("Aww, Player 3 lost!\n");
+                balance3 = PositionNumber;
+                PositionNumber++;
+        }
+
+        while(balance1>0 || balance2>0 || balance3>0){
+            
+            initdeck();
+            shuffledeck();
+
+            while(balance1>0)
+                playturn1();
+            while(balance2>0)
+                playturn2();
+            while(balance3>0)
+                playturn3();
+            while(balancedealer>0)
+                playturndealer();
+        }
+
+        if(balancedealer<0){
+            printf("PLAYERS WIN! NICE JOB!!!\n");
+            if(balance1>balance2 && balance2>balance3){
+                printf("1st Place: Player 1\n2nd Place: Player 2\n3rd Place: Player 3\n4th Place: Dealer");
+                exit(0);
+            }
+            else if(balance1>balance2 && balance3>balance2){
+                printf("1st Place: Player 1\n2nd Place: Player 3\n3rd Place: Player 2\n4th Place: Dealer");
+                exit(0);
+            }
+            else if(balance2>balance1 && balance1>balance3){
+                printf("1st Place: Player 2\n2nd Place: Player 1\n3rd Place: Player 3\n4th Place: Dealer");
+                exit(0);
+            }
+            else if(balance2>balance1 && balance3>balance1){
+                printf("1st Place: Player 2\n2nd Place: Player 3\n3rd Place: Player 1\n4th Place: Dealer");
+                exit(0);
+            }
+            else if(balance3>balance1 && balance1>balance2){
+                printf("1st Place: Player 3\n2nd Place: Player 1\n3rd Place: Player 2\n4th Place: Dealer");
+                exit(0);
+            }
+            else if(balance3>balance1 && balance2>balance1){
+                printf("1st Place: Player 3\n2nd Place: Player 2\n3rd Place: Player 1\n4th Place: Dealer");
+                exit(0);
+            }
+        }
+
+        else if (balance1<0 && balance2<0 && balance3<0){
+            printf("DEALER WINS! LUCKY DAY FOR THE HOUSE TODAY!!!\n");
+            if(balance1>balance2 && balance2>balance3){
+                printf("1st Place: Dealer\n2nd Place: Player 1\n3rd Place: Player 2\n4th Place: Player 3");
+                exit(0);
+            }
+            else if(balance1>balance2 && balance3>balance2){
+                printf("1st Place: Dealer\n2nd Place: Player 1\n3rd Place: Player 3\n4th Place: Player 2");
+                exit(0);
+            }
+            else if(balance2>balance1 && balance1>balance3){
+                printf("1st Place: Dealer\n2nd Place: Player 2\n3rd Place: Player 1\n4th Place: Player 3");
+                exit(0);
+            }
+            else if(balance2>balance1 && balance3>balance1){
+                printf("1st Place: Dealer\n2nd Place: Player 2\n3rd Place: Player 3\n4th Place: Player 1");
+                exit(0);
+            }
+            else if(balance3>balance1 && balance1>balance2){
+                printf("1st Place: Dealer\n2nd Place: Player 3\n3rd Place: Player 1\n4th Place: Player 2");
+                exit(0);
+            }
+            else if(balance3>balance1 && balance2>balance1){
+                printf("1st Place: Dealer\n2nd Place: Player 3\n3rd Place: Player 2\n4th Place: Player 1");
+                exit(0);
+            }
+        }
+    }
+
+    else if(p == 5){
+
+        if(balance1<=0){
+                printf("Aww, Player 1 lost\n!");
+                balance1 = PositionNumber;
+                PositionNumber++;
+        }
+        if(balance2<=0){
+                printf("Aww, Player 2 lost!\n");
+                balance2 = PositionNumber;
+                PositionNumber++;
+        }
+        if(balance3<=0){
+                printf("Aww, Player 3 lost!\n");
+                balance3 = PositionNumber;
+                PositionNumber++;
+        }
+        if(balance4<=0){
+                printf("Aww, Player 4 lost!\n");
+                balance4 = PositionNumber;
+                PositionNumber++;
+        }
+
+        while(balance1>0 || balance2>0 || balance3>0 || balance4>0){
+            
+            initdeck();
+            shuffledeck();
+
+            while(balance1>0)
+                playturn1();
+            while(balance2>0)
+                playturn2();
+            while(balance3>0)
+                playturn3();
+            while(balance4>0)
+                playturn4();
+            while(balancedealer>0)
+                playturndealer();
+        }
+
+        if(balancedealer<0){
+            printf("PLAYERS WIN! NICE JOB!!!\n");
+            if(balance1>balance2 && balance2>balance3 && balance3>balance4){
+                printf("1st Place: Player 1\n2nd Place: Player 2\n3rd Place: Player 3\n4th Place: Player 4\n 5th Place: Dealer\n");
+                exit(0);
+            if(balance1>balance2 && balance2>balance3 && balance3>balance4){
+                printf("1st Place: Player 1\n2nd Place: Player 2\n3rd Place: Player 3\n4th Place: Player 4\n 5th Place: Dealer\n");
+                exit(0);
+            }
+            else if(balance1>balance2 && balance3>balance2){
+                printf("1st Place: Player 1\n2nd Place: Player 3\n3rd Place: Player 2\n4th Place: Dealer");
+                exit(0);
+            }
+            else if(balance2>balance1 && balance1>balance3){
+                printf("1st Place: Player 2\n2nd Place: Player 1\n3rd Place: Player 3\n4th Place: Dealer");
+                exit(0);
+            }
+            else if(balance2>balance1 && balance3>balance1){
+                printf("1st Place: Player 2\n2nd Place: Player 3\n3rd Place: Player 1\n4th Place: Dealer");
+                exit(0);
+            }
+            else if(balance3>balance1 && balance1>balance2){
+                printf("1st Place: Player 3\n2nd Place: Player 1\n3rd Place: Player 2\n4th Place: Dealer");
+                exit(0);
+            }
+            else if(balance3>balance1 && balance2>balance1){
+                printf("1st Place: Player 3\n2nd Place: Player 2\n3rd Place: Player 1\n4th Place: Dealer");
+                exit(0);
+            }
+        }
+
+        else if (balance1<0 && balance2<0 && balance3<0){
+            printf("DEALER WINS! LUCKY DAY FOR THE HOUSE TODAY!!!\n");
+            if(balance1>balance2 && balance2>balance3){
+                printf("1st Place: Dealer\n2nd Place: Player 1\n3rd Place: Player 2\n4th Place: Player 3");
+                exit(0);
+            }
+            else if(balance1>balance2 && balance3>balance2){
+                printf("1st Place: Dealer\n2nd Place: Player 1\n3rd Place: Player 3\n4th Place: Player 2");
+                exit(0);
+            }
+            else if(balance2>balance1 && balance1>balance3){
+                printf("1st Place: Dealer\n2nd Place: Player 2\n3rd Place: Player 1\n4th Place: Player 3");
+                exit(0);
+            }
+            else if(balance2>balance1 && balance3>balance1){
+                printf("1st Place: Dealer\n2nd Place: Player 2\n3rd Place: Player 3\n4th Place: Player 1");
+                exit(0);
+            }
+            else if(balance3>balance1 && balance1>balance2){
+                printf("1st Place: Dealer\n2nd Place: Player 3\n3rd Place: Player 1\n4th Place: Player 2");
+                exit(0);
+            }
+            else if(balance3>balance1 && balance2>balance1){
+                printf("1st Place: Dealer\n2nd Place: Player 3\n3rd Place: Player 2\n4th Place: Player 1");
+                exit(0);
+            }
+        }
+    }
+
+    }
+}
+
+
+
+int hit(int *i){
       int a = ShuffledDeck[*i];
       *i = *i +1;
       return a;
     }
     
-    void initdeck(){
+void initdeck(){
         int i=0;
         for(i;i<52;i++){
             Deck[i] = i+1;  
         }
     }
     
-    void shuffledeck(){
+void shuffledeck(){
         srand(time(NULL));
         int i=0;
         for(i;i<52;i++){
@@ -92,7 +354,7 @@
         }
     }
     
-    int cval(int b){
+int cval(int b){
         int a;
         if(((b%13)+1)<10)
             a = b%13+1;
@@ -101,7 +363,7 @@
         return a;
     }
     
-    char *csuit(int b){
+char *csuit(int b){
         b = b%4;
         switch(b){
             case 0 :
@@ -115,7 +377,7 @@
         }
     }
     
-    char *cface(int b){
+char *cface(int b){
         b = b%13+1;
         char *outcome;
         switch(b){
@@ -161,7 +423,7 @@
         return outcome;
     }
       
-    void checkAce(int v1, int v2, int *a1){
+void checkAce(int v1, int v2, int *a1){
         if(v1 == 1 || v2 == 1){
             int input;
             if(v1 == 1 && v2 == 1){
@@ -182,165 +444,332 @@
         }
     }
     
-    void playturn1(){
+void playturn1(){
 
-        printf("Alright, it's Player's 1 turn!\n");
-        printf("Your current balance is $%d.\n", balance1);
-        printf("You've made a bet of $5. Good luck!\n\n");
+    printf("Alright, it's Player's 1 turn!\n");
+    printf("Your current balance is $%d.\n", balance1);
 
-        int garbage=0; // garbage value
-        int a1 = hit(&garbage); // hit(int *i = &inc)
-        char *acs1 = csuit(a1);
-        char *acf1 = cface(a1);
-        int acv1 = cval(a1);
+    int garbage=0; // garbage value
+    int a1 = hit(&garbage); // hit(int *i = &inc)
+    char *acs1 = csuit(a1);
+    char *acf1 = cface(a1);
+    int acv1 = cval(a1);
         
-        printf("You got a %s of %s worth %d, and ", acf1, acs1, acv1);
+    printf("You got a %s of %s worth %d, and ", acf1, acs1, acv1);
         
-        int a2 = hit(&garbage);
-        char *acs2 = csuit(a2);
-        char *acf2 = cface(a2);
-        int acv2 = cval(a2);
+    int a2 = hit(&garbage);
+    char *acs2 = csuit(a2);
+    char *acf2 = cface(a2);
+    int acv2 = cval(a2);
     
-        printf("a %s of %s worth %d.\n", acf2, acs2, acv2);
+    printf("a %s of %s worth %d.\n", acf2, acs2, acv2);
     
-        int d1 = hit(&garbage);
-        char *dcs1 = csuit(d1);
-        char *dcf1 = cface(d1);
-        int dcv1 = cval(d1);
+    int d1 = hit(&garbage);
+    char *dcs1 = csuit(d1);
+    char *dcf1 = cface(d1);
+    int dcv1 = cval(d1);
     
-        printf("The dealer's face up card is a %s of %s worth %d.\n", dcf1, dcs1, dcv1);
+    printf("The dealer's face up card is a %s of %s worth %d.\n", dcf1, dcs1, dcv1);
     
-        int d2 = hit(&garbage);
-        char *dcs2 = csuit(d2);
-        char *dcf2 = cface(d2);
-        int dcv2 = cval(d2);
+    int d2 = hit(&garbage);
+    char *dcs2 = csuit(d2);
+    char *dcf2 = cface(d2);
+    int dcv2 = cval(d2);
     
-        int player1total = acv1 + acv2;
-        int dealertotal = dcv1;
+    int player1total = acv1 + acv2;
+    int dealertotal = dcv1;
     
-        checkAce(acv1, acv2, &player1total);
+    checkAce(acv1, acv2, &player1total);
     
-        printf("You have a total of %d points, and the dealer has %d.\n(type 1 to draw a card, or type 2 to end your turn!)\n", player1total, dealertotal);  
+    printf("You have a total of %d points, and the dealer has %d.\n(type 1 to draw a card, or type 2 to end your turn!)\n", player1total, dealertotal);  
     
-        if(player1total == 21){
+    if(player1total == 21){
 
-            printf("Congrats! You got a blackjack!");
-            balance1 += 5;
-        }
+        printf("Congrats! You got a blackjack!");
+        balance1 += 5;
+    }
         
-        else{
+    else{
 
-            int input;
-            scanf("%d", &input);
+        int input;
+        scanf("%d", &input);
 
-            while(input != 2){
+        while(input != 2){
 
-                if(input = 1){
+            if(input = 1){
 
-                    int a3 = hit(&garbage);
-                    char *acs3 = csuit(a3);
-                    char *acf3 = cface(a3);
-                    int acv2 = cval(a3);
-                    player1total += acv2;
-                    printf("You got a %s of %s worth %d.\n", acf3, acs3, acv2);
+                int a3 = hit(&garbage);
+                char *acs3 = csuit(a3);
+                char *acf3 = cface(a3);
+                int acv2 = cval(a3);
+                player1total += acv2;
+                printf("You got a %s of %s worth %d.\n", acf3, acs3, acv2);
 
-                    if(player1total <= 21){
+                if(player1total <= 21){
                         
-                        if(acv2==1){
+                    if(acv2==1){
 
-                            int input;
-                            printf("You've got an ace. Choose whether you want to make it count as 1 or 11.\n");
-                            scanf("%d",&input);
-                            if(input == 11)
-                            player1total += 10;
-                        }                    
-                    }
-
-                    else if(player1total >21){
-                        
-                    printf("Oh no, you've busted with %d. Try Again!\n", player1total);
-                        balance1 -= 5;
-                        break;
-                    }
-
-                    else{
-
-                    printf("Wrong input, please restart the code!\n");
-                    exit(0);
-                    }
-
-                    printf("Your new total is %d.\n", player1total);
-                    scanf("%d", &input);
-                }
-            }
-        }
-
-        if(player1total <= 21){
-
-            printf("The dealer's flips a %s of %s worth %d.\n", dcf2, dcs2, dcv2);
-            dealertotal += dcv2;
-
-            if(dcv2 == 1){
-
-                if(dealertotal+11 < 21)
-                    dealertotal += 10;
-            }
-    
-            if(dealertotal >= 16)
-                printf("The dealer stands with %d.\n", dealertotal);
-    
-            while(dealertotal < 16){
-
-                int d3 = hit(&garbage);
-                char *dcs3 = csuit(d3);
-                char *dcf3 = cface(d3);
-                int dcv3 = cval(d3);
-
-                dealertotal += dcv3;
-
-                printf("The dealer got a %s of %s worth %d.\n", dcf3, dcs3, dcv3);
-
-                if(dealertotal < 16){
-
-                    if(dcv3==1){
-
-                        if(dealertotal+11<21)
-                            dealertotal += 10;
-                    }
-
-                }else if(dealertotal > 21){
-
-                    printf("The dealer busted with %d! You win!\n", dealertotal);
-                    break;
-                }else{
-
-                    printf("The dealer stands with %d.\n", dealertotal);
-                    break;
+                        int input;
+                        printf("You've got an ace. Choose whether you want to make it count as 1 or 11.\n");
+                        scanf("%d",&input);
+                        if(input == 11)
+                        player1total += 10;
+                    }                    
                 }
 
-                printf("The dealer's new total is %d.\n", dealertotal);
+                else if(player1total >21){
+                        
+                printf("Oh no, you've busted with %d. Try Again!\n", player1total);
+                balance1 -= 5;
+                break;
+                }
+
+                else{
+
+                printf("Wrong input, please restart the code!\n");
+                exit(0);
+                }
+
+                printf("Your new total is %d.\n", player1total);
+                scanf("%d", &input);
             }
+        }
+     }
 
-            if(dealertotal<player1total){
+    if(player1total <= 21){
 
-                printf("You beat the dealer! You gained $5!\n");
-                balance1 += 5;
+        printf("The dealer's flips a %s of %s worth %d.\n", dcf2, dcs2, dcv2);
+        dealertotal += dcv2;
+
+        if(dcv2 == 1){
+
+            if(dealertotal+11 < 21)
+                dealertotal += 10;
+        }
+    
+        if(dealertotal >= 16)
+            printf("The dealer stands with %d.\n", dealertotal);
+    
+        while(dealertotal < 16){
+
+            int d3 = hit(&garbage);
+            char *dcs3 = csuit(d3);
+            char *dcf3 = cface(d3);
+            int dcv3 = cval(d3);
+
+            dealertotal += dcv3;
+
+            printf("The dealer got a %s of %s worth %d.\n", dcf3, dcs3, dcv3);
+
+            if(dealertotal < 16){
+
+                if(dcv3==1){
+
+                    if(dealertotal+11<21)
+                        dealertotal += 10;
+                }
             }
-
-            else if(dealertotal==player1total)
-                printf("Its a tie! Push pot, no one wins anything!");
             
-            else if(dealertotal>player1total && dealertotal <= 21){
-               
-                printf("Oh no! Looks like the dealer won. Goodbye $5... Try again!\n"); 
-                balance1 -= 5;  
+            else if(dealertotal > 21){
+
+                printf("The dealer busted with %d! You win!\n", dealertotal);
+                break;
             }
             
             else{
 
-                printf("You beat the dealer! Your payout is $5.\n"); 
-                balance1 += 5;
+                printf("The dealer stands with %d.\n", dealertotal);
+                break;
             }
+
+            printf("The dealer's new total is %d.\n", dealertotal);
+        }
+
+        if(dealertotal<player1total){
+
+            printf("You beat the dealer! You gained $5!\n");
+            balance1 += 5;
+        }
+
+        else if(dealertotal==player1total)
+            printf("Its a tie! Push pot, no one wins anything!");
+            
+        else if(dealertotal>player1total && dealertotal <= 21){
+               
+            printf("Oh no! Looks like the dealer won. Goodbye $5... Try again!\n"); 
+            balance1 -= 5;  
+        }
+            
+        else{
+
+            printf("You beat the dealer! Your payout is $5.\n"); 
+            balance1 += 5;
         }
     }
+}
+
+void playturndealer(){
+
+    printf("Alright, it's the Dealer's turn!\n");
+    printf("Your current balance is $%d.\n", balance1);
+    printf("You've made a bet of $5. Good luck!\n\n");
+
+    int garbage=0; // garbage value
+    int a1 = hit(&garbage); // hit(int *i = &inc)
+    char *acs1 = csuit(a1);
+    char *acf1 = cface(a1);
+    int acv1 = cval(a1);
+        
+    printf("You got a %s of %s worth %d, and ", acf1, acs1, acv1);
+        
+    int a2 = hit(&garbage);
+    char *acs2 = csuit(a2);
+    char *acf2 = cface(a2);
+    int acv2 = cval(a2);
+    
+    printf("a %s of %s worth %d.\n", acf2, acs2, acv2);
+    
+    int d1 = hit(&garbage);
+    char *dcs1 = csuit(d1);
+    char *dcf1 = cface(d1);
+    int dcv1 = cval(d1);
+    
+    printf("The dealer's face up card is a %s of %s worth %d.\n", dcf1, dcs1, dcv1);
+    
+    int d2 = hit(&garbage);
+    char *dcs2 = csuit(d2);
+    char *dcf2 = cface(d2);
+    int dcv2 = cval(d2);
+    
+    int player1total = acv1 + acv2;
+    int dealertotal = dcv1;
+    
+    checkAce(dcv1, dcv2, &dealertotal);
+    
+    printf("You have a total of %d points, and the dealer has %d.\n(type 1 to draw a card, or type 2 to end your turn!)\n", player1total, dealertotal);  
+    
+    if(player1total == 21){
+
+        printf("Congrats! You got a blackjack!");
+        balance1 += 5;
+    }
+        
+    else{
+
+        int input;
+        scanf("%d", &input);
+
+        while(input != 2){
+
+            if(input = 1){
+
+                int a3 = hit(&garbage);
+                char *acs3 = csuit(a3);
+                char *acf3 = cface(a3);
+                int acv2 = cval(a3);
+                player1total += acv2;
+                printf("You got a %s of %s worth %d.\n", acf3, acs3, acv2);
+
+                if(player1total <= 21){
+                        
+                    if(acv2==1){
+
+                        int input;
+                        printf("You've got an ace. Choose whether you want to make it count as 1 or 11.\n");
+                        scanf("%d",&input);
+                        if(input == 11)
+                        player1total += 10;
+                    }                    
+                }
+
+                else if(player1total >21){
+                        
+                printf("Oh no, you've busted with %d. Try Again!\n", player1total);
+                balance1 -= 5;
+                break;
+                }
+
+                else{
+
+                printf("Wrong input, please restart the code!\n");
+                exit(0);
+                }
+
+                printf("Your new total is %d.\n", player1total);
+                scanf("%d", &input);
+            }
+        }
+     }
+
+    if(player1total <= 21){
+
+        printf("The dealer's flips a %s of %s worth %d.\n", dcf2, dcs2, dcv2);
+        dealertotal += dcv2;
+
+        if(dcv2 == 1){
+
+            if(dealertotal+11 < 21)
+                dealertotal += 10;
+        }
+    
+        if(dealertotal >= 16)
+            printf("The dealer stands with %d.\n", dealertotal);
+    
+        while(dealertotal < 16){
+
+            int d3 = hit(&garbage);
+            char *dcs3 = csuit(d3);
+            char *dcf3 = cface(d3);
+            int dcv3 = cval(d3);
+
+            dealertotal += dcv3;
+
+            printf("The dealer got a %s of %s worth %d.\n", dcf3, dcs3, dcv3);
+
+            if(dealertotal < 16){
+
+                if(dcv3==1){
+
+                    if(dealertotal+11<21)
+                        dealertotal += 10;
+                }
+            }
+            
+            else if(dealertotal > 21){
+
+                printf("The dealer busted with %d! You win!\n", dealertotal);
+                break;
+            }
+            
+            else{
+
+                printf("The dealer stands with %d.\n", dealertotal);
+                break;
+            }
+
+            printf("The dealer's new total is %d.\n", dealertotal);
+        }
+
+        if(dealertotal<player1total){
+
+            printf("You beat the dealer! You gained $5!\n");
+            balance1 += 5;
+        }
+
+        else if(dealertotal==player1total)
+            printf("Its a tie! Push pot, no one wins anything!");
+            
+        else if(dealertotal>player1total && dealertotal <= 21){
+               
+            printf("Oh no! Looks like the dealer won. Goodbye $5... Try again!\n"); 
+            balance1 -= 5;  
+        }
+            
+        else{
+
+            printf("You beat the dealer! Your payout is $5.\n"); 
+            balance1 += 5;
+        }
+    }
+}
   
