@@ -5,6 +5,8 @@
 #define getName(var) #var
 //niama char siu bau
 
+//nidema chouchou
+
 int Deck[52];
 int ShuffledDeck[52];
 int balance1 = 50;
