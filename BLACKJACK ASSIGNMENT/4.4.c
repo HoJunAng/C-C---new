@@ -1,3 +1,6 @@
+// https://www.canva.com/design/DAFRl5gT3gU/csyDDzmuECOs22PDoDrsgg/view?utm_content=DAFRl5gT3gU&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton
+
+
 // if you are planing to read all the comments, good luck my friend!
 
 
@@ -16,8 +19,8 @@ int player3total;
 int player4total;
 int player5total;
 int dealertotal;
-int balance1 = 50; // amount of balance/money of each player
-int balance2 = 50;
+int balance1 = 5; // amount of balance/money of each player
+int balance2 = 5;
 int balance3 = 50;
 int balance4 = 50;
 int balance5 = 50;
@@ -54,6 +57,8 @@ int blackjack5 = 1;
 int bust5 = 1;
 int bustdealer = 1; // if dealer bust, then players that haven't bust will automatically win in the current round
 int dcv1; // value of first card of dealer will be shown before the dealer's turn
+char *dcf1; // face of first card of dealer
+char *dcs1; // suite of first card of dealer
 int garbage; // garbage value for selecting a card from the randomised deck
 void playturn1(); // turn function for each player
 void playturn2();
@@ -110,7 +115,7 @@ void shuffledeck(){
         }
         i=0; // reset value of i for reuse
 
-        // this function will be better explained in the report, but if you want more detail, here's the link for the video: https://www.youtube.com/watch?v=4zx5bM2OcvA
+        // this function will be better explained in the report
         for(i=52-1;i>0;i--){
             int j = rand()%(i+1); 
             int n = ShuffledDeck[i];
@@ -298,7 +303,7 @@ int main(){
 This fucntion also sets up the proper codes according to the amount of players that are playing */ 
 int play(int p){
     
-    balancedealer = (p-1) * 50; // sets dealer amount based on number of players that are playing
+    balancedealer = (p-1) * 5; // sets dealer amount based on number of players that are playing
     printf("\nAll players starts with $50! And the dealer starts with $%d!\n", balancedealer);
     if(p == 2){
 
@@ -353,7 +358,7 @@ int play(int p){
 
                 /* same concept as before for concluding, but how it works now is that the player who has the most money gets 1st place, while the one that has less will get 2nd place.
                 But if let's say there is a situation where a player lost all their balance first, then the dealer. In this case, the balance of that player will be set to BalanceNumber (which is -10 as previously mentioned),
-                then BalanceNumber-- so that the next player that that lost all their balacnce (but the remanining players hasn't lost all their balances yet) will always have a balance that's less than the previous person in order to assign their rank for conclusion.
+                then BalanceNumber++ so that the next player that that lost all their balance (but the remanining players hasn't lost all their balances yet) will always have a balance that's more than the previous person in order to assign their rank for conclusion.
                 Why did I make this complicated algorithm for only 3 players instead of simply using normal condition "if" fucntions? Because it's design to help tremendously with the ranking of more players playing such as 5 or 6 players.
                 But again, this algorithm is already thought of very early on, but there's simply not enough time when it come's to intergrating the code later on when making this project*/
 
@@ -415,8 +420,8 @@ void playturn1(){
         printf("a %s of %s worth %d.\n", acf2, acs2, acv2);
         
         int d1 = hit(&garbage); // this represents one of the dealer's card since one of the dealer's card is faced up
-        char *dcs1 = csuit(d1);
-        char *dcf1 = cface(d1);
+        dcs1 = csuit(d1);
+        dcf1 = cface(d1);
         dcv1 = cval(d1);
         
         printf("The dealer's face up card is a %s of %s worth %d.\n", dcf1, dcs1, dcv1);
@@ -427,7 +432,7 @@ void playturn1(){
         checkAce(acv1, acv2, &player1total); // fucntion explained previously
         
         printf("You have a total of %d points, and the dealer has %d.\n(type 1 to draw a card, or type 2 to end your turn!)\n", player1total, dealertotal);  
-        
+
         if(player1total == 21){
             
             // condition where Player 1 gets a blackjack
@@ -478,7 +483,7 @@ void playturn1(){
                                     // if Player 1 losses early, then it will go through the position algorithm that's mentioned previously
                                     printf("Aww, Player 1 lost...");
                                     balance1=BalanceNumber;
-                                    BalanceNumber--;
+                                    BalanceNumber++;
                                     position1 = PositionNumber;
                                     PositionNumber--;
                                     blackjack1 = 1;
@@ -501,7 +506,7 @@ void playturn1(){
                     if(balance1<=0){
                         printf("Aww, Player 1 lost...");
                         balance1=BalanceNumber;
-                        BalanceNumber--;
+                        BalanceNumber++;
                         position1 = PositionNumber;
                         PositionNumber--;
                         blackjack1 = 1;
@@ -549,7 +554,7 @@ void playturn2(){
         int bcv2 = cval(b2);
         
         printf("a %s of %s worth %d.\n", bcf2, bcs2, bcv2);
-        printf("The dealer's face up card is a %s of %s worth %d.\n", bcf1, bcs1, bcv1);
+        printf("The dealer's face up card is a %s of %s worth %d.\n", dcf1, dcs1, dcv1);
         
         player2total = bcv1 + bcv2;
         
@@ -599,7 +604,7 @@ void playturn2(){
                                 if(balance2<=0){
                                     printf("Aww, Player 2 lost...");
                                     balance2=BalanceNumber;
-                                    BalanceNumber--;
+                                    BalanceNumber++;
                                     position2 = PositionNumber;
                                     PositionNumber--;
                                     blackjack2 = 1;
@@ -620,7 +625,7 @@ void playturn2(){
                     if(balance2<=0){
                         printf("Aww, Player 2 lost...");
                         balance2=BalanceNumber;
-                        BalanceNumber--;
+                        BalanceNumber++;
                         position2 = PositionNumber;
                         PositionNumber--;
                         blackjack2 = 1;
@@ -667,7 +672,7 @@ void playturndealer(){
             if(balance1<=0){
                 printf("\nAww, Player 1 lost...\n");
                 balance1 = BalanceNumber;
-                BalanceNumber--;
+                BalanceNumber++;
                 position1 = PositionNumber;
                 PositionNumber--;
                 blackjack1 = 1;
@@ -681,7 +686,7 @@ void playturndealer(){
             if(balance2<=0){
                 printf("\nAww, Player 2 lost...\n");
                 balance2 = BalanceNumber;
-                BalanceNumber--;
+                BalanceNumber++;
                 position2 = PositionNumber;
                 PositionNumber--;
                 blackjack2 = 1;
@@ -695,7 +700,7 @@ void playturndealer(){
             if(balance3<=0){
                 printf("\nAww, Player 3 lost...\n");
                 balance3 = BalanceNumber;
-                BalanceNumber--;
+                BalanceNumber++;
                 position3 = PositionNumber;
                 PositionNumber--;
                 blackjack3 = 1;
@@ -709,7 +714,7 @@ void playturndealer(){
             if(balance4<=0){
                 printf("\nAww, Player 4 lost...\n");
                 balance4 = BalanceNumber;
-                BalanceNumber--;
+                BalanceNumber++;
                 position4 = PositionNumber;
                 PositionNumber--;
                 blackjack4 = 1;
@@ -723,7 +728,7 @@ void playturndealer(){
             if(balance5<=0){
                 printf("\nAww, Player 5 lost...\n");
                 balance5 = BalanceNumber;
-                BalanceNumber--;
+                BalanceNumber++;
                 position5 = PositionNumber;
                 PositionNumber--;
                 blackjack5 = 1;
@@ -760,6 +765,7 @@ void playturndealer(){
         dealertotal = dcv1 + dcv2; // dealer's current total card points
         
         checkAce(dcv1, dcv2, &dealertotal);
+        printf("Remember, you have a card that is a %s of %s worth %d.\n", dcf1, dcs1, dcv1);
         printf("You also got a %s of %s worth %d.\n", dcf2, dcs2, dcv2);
         printf("You have a total of %d points\n(type 1 to draw a card, or type 2 to end your turn!)\n", dealertotal); 
         scanf("%d", &input);
@@ -865,7 +871,7 @@ void playturndealer(){
             if(balance1<=0){
                 printf("Aww, Player 1 lost...");
                 balance1 = BalanceNumber;
-                BalanceNumber--;
+                BalanceNumber++;
                 position1 = PositionNumber;
                 PositionNumber--;
                 blackjack1 = 1;
@@ -898,14 +904,14 @@ void playturndealer(){
             if(balance5<=0){
                 printf("Aww, Player 2 lost...");
                 balance2 = BalanceNumber;
-                BalanceNumber--;
+                BalanceNumber++;
                 position2 = PositionNumber;
                 PositionNumber--;
                 blackjack2 = 1;
                 bust2 = 1;
             }
         }
-        else if(player1total == dealertotal)
+        else if(player2total == dealertotal)
             printf("Dealer and Player 2 has the same points, neither wins in this case. PUSH POT!!!\n");
     }
 
@@ -929,7 +935,7 @@ void playturndealer(){
             if(balance3<=0){
                 printf("Aww, Player 3 lost...");
                 balance3 = BalanceNumber;
-                BalanceNumber--;
+                BalanceNumber++;
                 position3 = PositionNumber;
                 PositionNumber--;
                 blackjack3 = 1;
@@ -958,7 +964,7 @@ void playturndealer(){
             if(balance4<=0){
                 printf("Aww, Player 4 lost...");
                 balance4 = BalanceNumber;
-                BalanceNumber--;
+                BalanceNumber++;
                 position4 = PositionNumber;
                 PositionNumber--;
                 blackjack4 = 1;
@@ -987,7 +993,7 @@ void playturndealer(){
             if(balance5<=0){
                 printf("Aww, Player 5 lost...");
                 balance5 = BalanceNumber;
-                BalanceNumber--;
+                BalanceNumber++;
                 position5 = PositionNumber;
                 PositionNumber--;
                 blackjack5 = 1;
